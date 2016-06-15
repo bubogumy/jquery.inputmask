@@ -70,13 +70,14 @@
 					opts.placeholder = opts.placeholder.charAt(0);
 				}
 				//only allow radixfocus when placeholder = 0
-				opts.radixFocus = opts.radixFocus && opts.placeholder !== "" && opts.integerOptional === true;
-
+				if (opts.positionCaretOnClick === "radixFocus" && (opts.placeholder === "" && opts.integerOptional === false)) {
+					opts.positionCaretOnClick = "lvp";
+				}
 				opts.definitions[";"] = opts.definitions["~"]; //clone integer def for decimals
 				opts.definitions[";"].definitionSymbol = "~";
 
 				if (opts.numericInput === true) { //finance people input style
-					opts.radixFocus = false;
+					opts.positionCaretOnClick = opts.positionCaretOnClick === "radixFocus" ? "lvp" : opts.positionCaretOnClick;
 					opts.digitsOptional = false;
 					if (isNaN(opts.digits)) opts.digits = 2;
 					opts.decimalProtect = false;
@@ -98,6 +99,15 @@
 
 				opts.greedy = false; //enforce greedy false
 
+				//convert min and max options
+				if (opts.min !== null) {
+					opts.min = opts.min.toString().replace(new RegExp(Inputmask.escapeRegex(opts.groupSeparator), "g"), "");
+					if (opts.radixPoint === ",") opts.min = opts.min.replace(opts.radixPoint, ".");
+				}
+				if (opts.max !== null) {
+					opts.max = opts.max.toString().replace(new RegExp(Inputmask.escapeRegex(opts.groupSeparator), "g"), "");
+					if (opts.radixPoint === ",") opts.max = opts.max.replace(opts.radixPoint, ".");
+				}
 				return mask;
 			},
 			placeholder: "",
@@ -105,7 +115,7 @@
 			digits: "*", //number of fractionalDigits
 			digitsOptional: true,
 			radixPoint: ".",
-			radixFocus: true,
+			positionCaretOnClick: "radixFocus",
 			groupSize: 3,
 			groupSeparator: "",
 			autoGroup: false,
@@ -214,6 +224,10 @@
 					isNegative = isNegative !== null && isNegative.length === 1;
 					processValue = processValue.replace(new RegExp("[-" + Inputmask.escapeRegex(opts.negationSymbol.front) + "]", "g"), "");
 					processValue = processValue.replace(new RegExp(Inputmask.escapeRegex(opts.negationSymbol.back) + "$"), "");
+					//strip placeholder at the end
+					if (isNaN(opts.placeholder)) {
+						processValue = processValue.replace(new RegExp(Inputmask.escapeRegex(opts.placeholder), "g"), "");
+					}
 					processValue = processValue === opts.negationSymbol.front ? processValue + "0" : processValue;
 
 					if (processValue !== "" && isFinite(processValue)) {
@@ -222,10 +236,12 @@
 						if (opts.min !== null && isFinite(opts.min) && signedFloatValue < parseFloat(opts.min)) {
 							floatValue = Math.abs(opts.min);
 							isNegative = opts.min < 0;
+							maskedValue = undefined;
 						}
 						else if (opts.max !== null && isFinite(opts.max) && signedFloatValue > parseFloat(opts.max)) {
 							floatValue = Math.abs(opts.max);
 							isNegative = opts.max < 0;
+							maskedValue = undefined;
 						}
 
 						processValue = floatValue.toString().replace(".", opts.radixPoint).split('');
@@ -396,8 +412,8 @@
 				if (!strict) {
 					if (opts.numericInput === true) {
 						var buffer = maskset.buffer.slice("").reverse();
-						var char = buffer[opts.prefix.length];
-						if (char === "0") {
+						var bufferChar = buffer[opts.prefix.length];
+						if (bufferChar === "0" && maskset.validPositions[pos - 1] === undefined) {
 							return {
 								"pos": pos,
 								"remove": buffer.length - opts.prefix.length - 1
@@ -411,9 +427,8 @@
 							if (matchRslt["0"].indexOf(opts.placeholder !== "" ? opts.placeholder.charAt(0) : "0") === 0 &&
 								(matchRslt.index + 1 === pos || (isSelection !== true && decimalPart === 0))) {
 								maskset.buffer.splice(matchRslt.index, 1);
-								pos = matchRslt.index;
 								return {
-									"pos": pos,
+									"pos": matchRslt.index,
 									"remove": matchRslt.index
 								};
 							} else if (chrs === "0" && pos <= matchRslt.index && matchRslt["0"] !== opts.groupSeparator) {
@@ -521,6 +536,9 @@
 				}
 			},
 			onUnMask: function (maskedValue, unmaskedValue, opts) {
+				if (unmaskedValue === "" && opts.nullable === true) {
+					return unmaskedValue;
+				}
 				var processValue = maskedValue.replace(opts.prefix, "");
 				processValue = processValue.replace(opts.suffix, "");
 				processValue = processValue.replace(new RegExp(Inputmask.escapeRegex(opts.groupSeparator), "g"), "");

@@ -1760,4 +1760,57 @@ define([
 		$("#testmask").Type("2");
 		assert.equal($(testmask).val(), "$ 0.02", "Result " + $(testmask).val());
 	});
+
+	qunit.test("decimal minvalue 0,3 - enter 0,2 - Aifz", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask({
+			'alias': 'decimal',
+			'radixPoint': ',',
+			'digits': '2',
+			'min': '0,3',
+			'max': '5',
+			'allowMinus': false
+		}).mask(testmask);
+		testmask.focus();
+		$("#testmask").Type("0,2");
+		testmask.blur();
+		assert.equal($(testmask).val(), "0,3", "Result " + $(testmask).val());
+	});
+
+	qunit.test("currency max = 100 - type 200 - zigtechjs", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask("percentage", {
+			placeholder: "_",
+			digitsOptional: false,
+			max: 100,
+		}).mask(testmask);
+		testmask.focus();
+		$("#testmask").Type("200");
+		testmask.blur();
+		assert.equal($(testmask).val(), "100.00 %", "Result " + $(testmask).val());
+	});
+
+	qunit.test("Numbers get swapped when cursor near suffix. #1278 - xklepio", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask('decimal', {
+			radixPoint: ',',
+			groupSeparator: '.',
+			autoGroup: true,
+			repeat: 10,
+			digits: '2',
+			autoUnmask: true,
+			suffix: ' €'
+		}).mask(testmask);
+		testmask.focus();
+		$.caret(testmask, 1);
+		$("#testmask").Type("52");
+		assert.equal($("#testmask")[0].inputmask._valueGet(), "52 €", "Result " + $("#testmask")[0].inputmask._valueGet());
+	});
+
 });

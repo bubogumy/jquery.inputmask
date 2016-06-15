@@ -441,7 +441,7 @@ Inputmask.extendDefaults({
 ```
 
 ## Methods:
-### mask
+### mask(elems)
 Create a mask for the input.
 
 ```javascript
@@ -475,6 +475,7 @@ Inputmask("99-999-99").mask(selector);
 
 ### unmaskedvalue
 Get the `unmaskedvalue`
+
 
 ```javascript
 $(selector).inputmask('unmaskedvalue');
@@ -561,10 +562,22 @@ $(selector).inputmask("getmetadata");
 ```
 
 ### setvalue
-The setvalue functionality is to set a value to the inputmask like you would do with jQuery.val, BUT it will trigger the internal event used by the inputmask always, whatever the case. This is particular usefull when cloning an inputmask with jQuery.clone.  Cloning an inputmask is not a fully functional clone.  On the first event (mouseenter, focus, ...) the inputmask can detect if it where cloned an can reactivate the masking.  However when setting the value with jQuery.val there is none of the events triggered.  The setvalue functionality does this for you.
+The setvalue functionality is to set a value to the inputmask like you would do with jQuery.val, BUT it will trigger the internal event used by the inputmask always, whatever the case. This is particular usefull when cloning an inputmask with jQuery.clone.  Cloning an inputmask is not a fully functional clone.  On the first event (mouseenter, focus, ...) the inputmask can detect if it where cloned an can reactivate the masking.  However when setting the value with jQuery.val there is none of the events triggered in that case.  The setvalue functionality does this for you.
 
-### option
+### option(options, noremask)
 Get or set an option on an existing inputmask.
+The option method is intented for adding extra options like callbacks, etc at a later time to the mask.
+
+When extra options are set the mask is automatically reapplied, unless you pas true for the noremask argument.
+
+Set an option
+```javascript
+document.querySelector("#CellPhone").inputmask.option({
+  onBeforePaste: function (pastedValue, opts) {
+    return phoneNumOnPaste(pastedValue, opts);
+  }
+});
+```
 
 ```javascript
 $("#CellPhone").inputmask("option", {
@@ -572,7 +585,6 @@ $("#CellPhone").inputmask("option", {
     return phoneNumOnPaste(pastedValue, opts);
   }
 })
-$("#CellPhone").inputmask("option", "onBeforePaste")
 ```
 
 ### format
@@ -912,9 +924,6 @@ Define the radixpoint (decimal separator)<br>Default: ""
 ### groupSeparator (numerics)
 Define the groupseparator<br>Default: ""
 
-### radixFocus (numerics)
-Position the caret to the radixpoint on the initial click into the inputfield.<br>Default: false
-
 ### nojumps
 Do not jump over fixed parts in the mask.<br>Default: false
 
@@ -978,6 +987,10 @@ Inputmask("(99 99 999999)|(i{+})", {
 Return nothing when the user hasn't entered anything.
 Default: true
 
+### positionCaretOnClick
+Positioning of the caret on click.  Options none, lvp (based on the last valid position (default), radixFocus (position caret to radixpoint on initial click)
+Default: "lvp"
+
 ## General
 ### set a value and apply mask
 this can be done with the traditional jquery.val function (all browsers) or JavaScript value property for browsers which implement lookupGetter or getOwnPropertyDescriptor
@@ -1011,8 +1024,8 @@ $(document).ready(function(){
 });
 ```
 
-### auto upper/lower- casing inputmask
-You can define within a definition to automatically lowercase or uppercase the entry in an input by giving the casing.<br>Casing can be null, "upper" or "lower"
+### auto-casing inputmask
+You can define within a definition to automatically apply some casing on the entry in an input by giving the casing.<br>Casing can be null, "upper", "lower" or "title".
 
 ```javascript
 Inputmask.extendDefinitions({

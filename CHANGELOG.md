@@ -1,7 +1,37 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-## UNRELEASED
+## [UNRELEASED]
+
+### Added
+- 'casing': 'title' #1277
+
+### Updates
+- replaced radixFocus option by positionCaretOnClick.  Allows choice for behavior of the caret on click. (none, lvp (default), radixFocus)
+- performance updates
+	- getmasklength
+
+### Fixed
+- onUnMask is not being called #1291
+- How Can I have caret position on decimal digit(after decimal point) for currency inputmask ? #1282
+- How to implement mask for these numbers? #840 (alternator)
+- 'setvalue' on mask with a suffix results in suffix being doubled, while `$.fn.val` works fine #1267
+
+## [3.3.1] - 2016-04-20
+
+### Updates
+- better handle alternator logic by merging the locators
+- patchValueProperty - enable native value property patch on IE8/IE9
+- speedup insert and delete from characters
+- adding extra options through option method => auto apply the mask + add noremask option
+
+### Fixed
+- Safari date mask - Context switch when jquery.valhook fallback is used #1255
+- Email alias _@_ => _@_._ #1245
+- Safari Error: RangeError: Maximum call stack size exceeded #1241
+- Safari Maximum call stack size exceeded when inputmask bound twice #1226
+
+## [3.3.0] - 2016-04-05
 
 ### Added
 - nullable option => switch to return the placeholder or null when nothing is entered
@@ -15,6 +45,10 @@ All notable changes to this project will be documented in this file.
 - patchValueProperty - enable native value property patch on IE10/IE11
 
 ### Fixed
+- PostValidation function fails when using placeholder and digitsOptional is false #1240
+- min value issue #1177
+- min value for decimal isn't working #1178
+- InputMask remove a 0 in left side. (numericInput: true) #1238
 - validate regular expression for indian vehicle registration number #1223
 - Distinguish empty value and '$ 0.00' value for currency alias #1053
 - 'alias': 'numeric', zero value #1221

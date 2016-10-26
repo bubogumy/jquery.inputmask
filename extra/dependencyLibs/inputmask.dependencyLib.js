@@ -6,7 +6,7 @@
  */
 (function (factory) {
 	if (typeof define === "function" && define.amd) {
-		define("inputmask.dependencyLib", factory);
+		define(factory);
 	} else if (typeof exports === "object") {
 		module.exports = factory();
 	} else {
@@ -87,14 +87,6 @@
 				this[0].eventRegistry = this[0].eventRegistry || {};
 			}
 		}
-	}
-
-	function getWindow(elem) {
-		return isWindow(elem) ?
-			elem :
-			elem.nodeType === 9 ?
-			elem.defaultView || elem.parentWindow :
-				false;
 	}
 
 	DependencyLib.prototype = {
@@ -227,7 +219,7 @@
 								evnt = new CustomEvent(ev, params);
 							} catch (e) {
 								evnt = document.createEvent("CustomEvent");
-								evnt.initCustomEvent(ev, params.bubbles, params.cancelable, params.detail);
+								evnt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
 							}
 							if (events.type) DependencyLib.extend(evnt, events);
 							elem.dispatchEvent(evnt);
@@ -254,14 +246,6 @@
 				}
 			}
 			return this;
-		},
-		position: function () {
-			if (isValidElement(this[0])) {
-				return {
-					top: this[0].offsetTop,
-					left: this[0].offsetLeft
-				};
-			}
 		}
 	};
 

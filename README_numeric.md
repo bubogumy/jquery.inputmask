@@ -12,9 +12,6 @@
 Number of fractionalDigits
 Default: "*"
 
-The value can be a number, *, or a quantifier syntax like 2,4
-When the quantifier syntax is used, the digitsOptional option is ignored
-
 ### digitsOptional
 Specify wheter the digits are optional.
 Default: true
@@ -77,8 +74,3 @@ Default: 1
 ### unmaskAsNumber
 Make unmasking returning a number instead of a string.
 Default: false
-
-Be warned that using the unmaskAsNumber option together with jQuery.serialize will fail as serialize expects a string. (See issue [#1288])
-
-
-[#1288]: https://github.com/RobinHerbots/jquery.inputmask/issues/1288

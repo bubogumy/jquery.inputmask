@@ -143,7 +143,7 @@ define([
 
 		testmask.focus();
 		$("#testmask").SendKey(Inputmask.keyCode.RIGHT, Inputmask.keyCode.CONTROL);
-		assert.ok(testmask.value != "dd/mm/yyyy", "Result " + testmask.value);
+		ok(testmask.value != "dd/mm/yyyy", "Result " + testmask.value);
 
 
 	});

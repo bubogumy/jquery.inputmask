@@ -39,7 +39,7 @@
 						return input && input.inputmask ? input.inputmask.getmetadata() : undefined;
 					case "setvalue":
 						$(input).val(options);
-						if (input && input.inputmask === undefined) { //reactivate jquery.clone
+						if (input && input.inputmask !== undefined) {
 							$(input).triggerHandler("setvalue");
 						}
 						break;

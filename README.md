@@ -27,8 +27,9 @@ Highlights:
 - value formatting / validating without input element
 - AMD/CommonJS support
 - dependencyLibs: vanilla javascript, jQuery, jqlite
+- [Android support](README_android.md)
 
-Demo page see [http://robinherbots.github.io/jquery.inputmask](http://robinherbots.github.io/jquery.inputmask)
+Demo page see [http://robinherbots.github.io/Inputmask](http://robinherbots.github.io/Inputmask)
 
 [![donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZNR3EB6JTMMSS)
 
@@ -118,12 +119,14 @@ If you like to automatically bind the inputmask to the inputs marked with the da
 
 If you use a module loader like requireJS
 
-Add in your config.js
+Have a look at the inputmask.loader.js for usage.
+
+Example config.js
 
 ```javascript
 paths: {
   ...
-  "inputmask.dependencyLib": "../dist/inputmask/inputmask.dependencyLib.jquery",
+  "inputmask.dependencyLib": "../dist/inputmask/inputmask.dependencyLib",
   "inputmask": "../dist/inputmask/inputmask",
   ...
 }
@@ -463,7 +466,7 @@ Inputmask("99-999-99").mask(document.querySelectorAll(selector));
 or
 
 ```javascript
-var im : new Inputmask("99-999-99");
+var im = new Inputmask("99-999-99");
 im.mask(document.querySelectorAll(selector));
 ```
 
@@ -735,7 +738,7 @@ Clear the incomplete input on blur
 
 ```javascript
 $(document).ready(function(){
-  $("#date").inputmask("d/m/y",{ "clearIncomplete": true } });
+  $("#date").inputmask("d/m/y",{ "clearIncomplete": true });
 });
 ```
 
@@ -924,12 +927,6 @@ Define the radixpoint (decimal separator)<br>Default: ""
 ### groupSeparator (numerics)
 Define the groupseparator<br>Default: ""
 
-### nojumps
-Do not jump over fixed parts in the mask.<br>Default: false
-
-### nojumpsThreshold
-Start nojumps as of<br>Default: 0
-
 ### keepStatic
 Default: null (~false) Use in combination with the alternator syntax Try to keep the mask static while typing. Decisions to alter the mask will be postponed if possible.
 
@@ -940,7 +937,7 @@ typing 1212345123 => should result in +55-12-1234-5123 type extra 4 => switch to
 When passing multiple masks (an array of masks) keepStatic is automatically set to true unless explicitly set through the options.
 
 ### positionCaretOnTab
-When enabled the caret position is set after the latest valid position on TAB Default: false
+When enabled the caret position is set after the latest valid position on TAB Default: true
 
 ### tabThrough
 Allows for tabbing through the different parts of the masked field.<br>Default: false
@@ -990,6 +987,23 @@ Default: true
 ### positionCaretOnClick
 Positioning of the caret on click.  Options none, lvp (based on the last valid position (default), radixFocus (position caret to radixpoint on initial click)
 Default: "lvp"
+
+### casing
+Apply casing at the mask-level.
+Options: null, "upper", "lower" or "title"
+Default: null
+
+### inputmode
+Default: "verbatim"
+Specify the inputmode  - already in place for when browsers start to  support them
+https://html.spec.whatwg.org/#input-modalities:-the-inputmode-attribute
+
+### colorMask
+Default: false
+Create a css styleable mask.
+Uses css classes: im-caret, im-static.
+
+You need to include the inputmask.css in your page to use this option in full.
 
 ## General
 ### set a value and apply mask

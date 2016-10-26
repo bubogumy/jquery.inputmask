@@ -305,7 +305,7 @@ define([
 
 		//IE7 does not know type=number and treats as type=text
 		//noinspection JSUnresolvedFunction
-		ok(testmask.value === "" || testmask.value === "123456", "Result " + testmask.value);
+		assert.ok(testmask.value === "" || testmask.value === "123456", "Result " + testmask.value);
 
 	});
 
@@ -1812,5 +1812,48 @@ define([
 		$("#testmask").Type("52");
 		assert.equal($("#testmask")[0].inputmask._valueGet(), "52 €", "Result " + $("#testmask")[0].inputmask._valueGet());
 	});
+
+	qunit.test("numeric + numericInput #1328 - douglasdtc", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask("numeric", {
+			'groupSeparator': '.',
+			'groupSize': 3,
+			'radixPoint': ',',
+			'numericInput': true,
+			'digits': 2
+		}).mask(testmask);
+		testmask.focus();
+		$("#testmask").val("237,38");
+
+		assert.equal(testmask.value, "237,38", "Result " + testmask.value);
+	});
+
+	qunit.test("numeric + type -", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask("currency", {negationSymbol: {front: "(", back: ")"}}).mask(testmask);
+		testmask.focus();
+		$.caret(testmask, 1);
+		$("#testmask").Type("-");
+
+		assert.equal(testmask.value, "($ 0.00)", "Result " + testmask.value);
+	});
+
+	qunit.test("numeric + type 123 - select partial type 0", function (assert) {
+		var $fixture = $("#qunit-fixture");
+		$fixture.append('<input type="text" id="testmask" />');
+		var testmask = document.getElementById("testmask");
+		Inputmask("currency").mask(testmask);
+		testmask.focus();
+		$("#testmask").Type("123");
+		$.caret(testmask, 0, 5);
+		$("#testmask").Type("0");
+
+		assert.equal(testmask.inputmask._valueGet(), "$ 0.00", "Result " + testmask.inputmask._valueGet());
+	});
+
 
 });
